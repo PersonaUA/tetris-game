@@ -1,5 +1,5 @@
 /** Board dimensions (in cells) */
-export const COLS = 5;
+export const COLS = 10;
 export const ROWS = 20;
 
 /** Pixel size of each cell on the canvas */
