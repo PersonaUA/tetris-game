@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.vite/
+*.log
+package-lock.json
+*.min.js
+*.map

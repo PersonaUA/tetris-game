@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TETRIS</title>
+
+  <!-- Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Left panel ──────────────────────────────────────────── -->
+  <aside class="side-panel">
+
+    <div class="panel-box">
+      <p class="panel-title">Score</p>
+      <p class="panel-value panel-value--large">
+        {{ score.toString().padStart(6, '0') }}
+      </p>
+    </div>
+
+    <div class="panel-box">
+      <p class="panel-title">Lines</p>
+      <p class="panel-value">{{ lines }}</p>
+    </div>
+
+    <div class="panel-box">
+      <p class="panel-title">Level</p>
+      <p class="panel-value">{{ level }}</p>
+      <div class="level-bar">
+        <div class="level-bar__fill" :style="{ width: (levelProgress * 100) + '%' }"></div>
+      </div>
+    </div>
+
+    <div class="panel-box">
+      <p class="panel-title">Best</p>
+      <p class="panel-value panel-value--accent">
+        {{ highScore.toString().padStart(6, '0') }}
+      </p>
+    </div>
+
+    <!-- Desktop controls reference -->
+    <div class="panel-box controls-help">
+      <p class="panel-title">Controls</p>
+      <div class="controls-list">
+        <span>← →</span> Move<br>
+        <span>↑</span> Rotate<br>
+        <span>↓</span> Soft drop<br>
+        <span>Space</span> Hard drop<br>
+        <span>P / Esc</span> Pause
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── Game board ───────────────────────────────────────────── -->
+  <main class="game-wrapper">
+
+    <h1 class="game-title">TETRIS</h1>
+
+    <div
+      class="board-container"
+      :class="{ 'board-container--flash': isFlashing }"
+    >
+      <canvas
+        ref="boardCanvasRef"
+        :width="BOARD_WIDTH"
+        :height="BOARD_HEIGHT"
+      ></canvas>
+
+      <!-- Start screen -->
+      <div class="overlay" v-if="gameState === 'idle'">
+        <p class="overlay__title overlay__title--cyan">READY?</p>
+        <p class="overlay__sub">Classic Tetris<br>Clear lines to score!</p>
+        <button class="btn" @click="startGame">START GAME</button>
+      </div>
+
+      <!-- Pause screen -->
+      <div class="overlay" v-if="gameState === 'paused'">
+        <p class="overlay__title overlay__title--cyan">PAUSED</p>
+        <button class="btn" @click="togglePause">RESUME</button>
+      </div>
+
+      <!-- Game over screen -->
+      <div class="overlay" v-if="gameState === 'over'">
+        <p class="overlay__title overlay__title--magenta">GAME<br>OVER</p>
+        <p class="overlay__sub">Score: {{ score }}<br>Lines: {{ lines }}</p>
+        <button class="btn" @click="startGame">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <!-- Mobile touch controls -->
+    <div class="mobile-controls">
+      <div class="mobile-controls__row">
+        <button class="mob-btn" @click="moveLeft">◀</button>
+        <button class="mob-btn" @click="softDropManual">▼</button>
+        <button class="mob-btn" @click="moveRight">▶</button>
+      </div>
+      <div class="mobile-controls__row">
+        <button class="mob-btn" @click="rotate">↺</button>
+        <button class="mob-btn" @click="hardDrop">▼▼</button>
+        <button class="mob-btn" style="font-size:7px" @click="togglePause">PAUSE</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Right panel ──────────────────────────────────────────── -->
+  <aside class="side-panel">
+
+    <div class="panel-box">
+      <p class="panel-title">Next</p>
+      <canvas
+        ref="previewCanvasRef"
+        class="preview-canvas"
+        :width="PREVIEW_SIZE"
+        :height="PREVIEW_SIZE"
+      ></canvas>
+    </div>
+
+    <div class="panel-box">
+      <p class="panel-title">Stats</p>
+      <div class="controls-list">
+        <span>Singles:</span> {{ stats.singles }}<br>
+        <span>Doubles:</span> {{ stats.doubles }}<br>
+        <span>Triples:</span> {{ stats.triples }}<br>
+        <span>Tetris:</span>  {{ stats.tetris }}
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+<!-- Vue 3 ES module build + app entry point -->
+<script type="module" src="src/app.js"></script>
+
+</body>
+</html>
